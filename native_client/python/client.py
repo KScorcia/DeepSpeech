@@ -83,7 +83,7 @@ class VersionAction(argparse.Action):
         super(VersionAction, self).__init__(nargs=0, *args, **kwargs)
 
     def __call__(self, *args, **kwargs):
-        print('DeepSpeech ', version())
+#         print('DeepSpeech ', version())
         exit(0)
 
 
@@ -111,13 +111,13 @@ def main():
                         help='Number of candidate transcripts to include in JSON output')
     args = parser.parse_args()
 
-    print('Loading model from file {}'.format(args.model), file=sys.stderr)
+#     print('Loading model from file {}'.format(args.model), file=sys.stderr)
     model_load_start = timer()
     # sphinx-doc: python_ref_model_start
     ds = Model(args.model)
     # sphinx-doc: python_ref_model_stop
     model_load_end = timer() - model_load_start
-    print('Loaded model in {:.3}s.'.format(model_load_end), file=sys.stderr)
+#     print('Loaded model in {:.3}s.'.format(model_load_end), file=sys.stderr)
 
     if args.beam_width:
         ds.setBeamWidth(args.beam_width)
@@ -125,11 +125,11 @@ def main():
     desired_sample_rate = ds.sampleRate()
 
     if args.scorer:
-        print('Loading scorer from files {}'.format(args.scorer), file=sys.stderr)
+#         print('Loading scorer from files {}'.format(args.scorer), file=sys.stderr)
         scorer_load_start = timer()
         ds.enableExternalScorer(args.scorer)
         scorer_load_end = timer() - scorer_load_start
-        print('Loaded scorer in {:.3}s.'.format(scorer_load_end), file=sys.stderr)
+#         print('Loaded scorer in {:.3}s.'.format(scorer_load_end), file=sys.stderr)
 
         if args.lm_alpha and args.lm_beta:
             ds.setScorerAlphaBeta(args.lm_alpha, args.lm_beta)
@@ -137,7 +137,7 @@ def main():
     fin = wave.open(args.audio, 'rb')
     fs_orig = fin.getframerate()
     if fs_orig != desired_sample_rate:
-        print('Warning: original sample rate ({}) is different than {}hz. Resampling might produce erratic speech recognition.'.format(fs_orig, desired_sample_rate), file=sys.stderr)
+#         print('Warning: original sample rate ({}) is different than {}hz. Resampling might produce erratic speech recognition.'.format(fs_orig, desired_sample_rate), file=sys.stderr)
         fs_new, audio = convert_samplerate(args.audio, desired_sample_rate)
     else:
         audio = np.frombuffer(fin.readframes(fin.getnframes()), np.int16)
@@ -145,7 +145,7 @@ def main():
     audio_length = fin.getnframes() * (1/fs_orig)
     fin.close()
 
-    print('Running inference.', file=sys.stderr)
+#     print('Running inference.', file=sys.stderr)
     inference_start = timer()
     # sphinx-doc: python_ref_inference_start
     if args.extended:
@@ -156,7 +156,7 @@ def main():
         print(ds.stt(audio))
     # sphinx-doc: python_ref_inference_stop
     inference_end = timer() - inference_start
-    print('Inference took %0.3fs for %0.3fs audio file.' % (inference_end, audio_length), file=sys.stderr)
+#     print('Inference took %0.3fs for %0.3fs audio file.' % (inference_end, audio_length), file=sys.stderr)
 
 if __name__ == '__main__':
     main()
